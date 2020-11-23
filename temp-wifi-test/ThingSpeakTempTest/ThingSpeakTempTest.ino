@@ -24,18 +24,22 @@
   
   Copyright 2018, The MathWorks, Inc.
 */
+int sensorPin = 0; //the analog pin the TMP36's Vout (sense) pin is connected to
+                        //the resolution is 10 mV / degree centigrade with a
+                        //500 mV offset to allow for negative temperatures
+                        
 char ssid[] = SECRET_SSID;    //  your network SSID (name) 
-//char pass[] = SECRET_PASS;   // your network password, none for RIT-Legacy network
+char pass[] = SECRET_PASS;   // your network password, none for RIT-Legacy network
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
 WiFiClient  client;
 
 unsigned long myChannelNumber = SECRET_CH_ID;
 const char* myWriteAPIKey = SECRET_WRITE_APIKEY;
 
-int photocell = 0;
+//int photocell = 0;
 
 void setup() {
-  Serial.begin(115200);  // Initialize serial
+  Serial.begin(9600);
 
   // check for the WiFi module:
   if (WiFi.status() == WL_NO_MODULE) {
@@ -59,16 +63,37 @@ void loop() {
     Serial.print("Attempting to connect to SSID: ");
     Serial.println(SECRET_SSID);
     while(WiFi.status() != WL_CONNECTED){
-      WiFi.begin(ssid); // Connect to WPA/WPA2 network. Change this line if using open or WEP network
+      WiFi.begin(ssid, pass); // Connect to WPA/WPA2 network. Change this line if using open or WEP network
       Serial.print(".");
       delay(5000);     
     } 
     Serial.println("\nConnected.");
   }
+
+  int reading = analogRead(sensorPin);  
+ Serial.print("Thermistor reading: ");Serial.println(reading);
+ 
+ // converting that reading to voltage, for 3.3v arduino use 3.3
+ float voltage = reading * 5.0;
+ voltage /= 1024.0; 
+ 
+ // print out the voltage
+ Serial.print(voltage); Serial.println(" volts");
+ 
+ // now print out the temperature
+ float temperatureC = (voltage - 0.5) * 10;  //converting from 10 mv per degree wit 500 mV offset
+                                               //to degrees ((voltage - 500mV) times 100)
+ Serial.print(temperatureC); Serial.println(" degrees C");
+ 
+ // now convert to Fahrenheit
+ float temperatureF = (temperatureC * 9.0 / 5.0) + 32.0;
+ Serial.print(temperatureF); Serial.println(" degrees F");
+ 
+ delay(1000);                                     //waiting a second
   
   // Write to ThingSpeak. There are up to 8 fields in a channel, allowing you to store up to 8 different
   // pieces of information in a channel.  Here, we write to field 1.
-  int x = ThingSpeak.writeField(myChannelNumber, 1, photocell, myWriteAPIKey);
+  int x = ThingSpeak.writeField(myChannelNumber, 1, temperatureF, myWriteAPIKey);
   if(x == 200){
     Serial.println("Channel update successful.");
   }
@@ -76,7 +101,7 @@ void loop() {
     Serial.println("Problem updating channel. HTTP error code " + String(x));
   }
 
-  photocell = analogRead(0);
+  //photocell = analogRead(0);
   
   delay(20000); // Wait 20 seconds to update the channel again
 }
