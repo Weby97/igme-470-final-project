@@ -103,7 +103,7 @@ void loop() {
   //photocell = analogRead(0);
   
   delay(20000); // Wait 20 seconds to update the channel again
-  } else {
+  } else { //if below, turn off LED and don't do any WiFi stuff
     digitalWrite(led1, LOW);
   }
   
