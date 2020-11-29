@@ -1,3 +1,5 @@
+//Thermistor code from: https://www.circuitbasics.com/arduino-thermistor-temperature-sensor-tutorial/
+
 int led1 = 13;
 int ThermistorPin = 0;
 int Vo;
