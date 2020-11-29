@@ -103,6 +103,8 @@ void loop() {
   //photocell = analogRead(0);
   
   delay(20000); // Wait 20 seconds to update the channel again
+  } else {
+    digitalWrite(led1, LOW);
   }
   
 }
