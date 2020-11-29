@@ -2,6 +2,7 @@
 #include <ThingSpeak.h>
 #include "secrets.h"
 /*
+ * Thermistor Code from: https://www.circuitbasics.com/arduino-thermistor-temperature-sensor-tutorial/
   WriteSingleField
   
   Description: Writes a value to a channel on ThingSpeak every 20 seconds.
@@ -24,7 +25,7 @@
   
   Copyright 2018, The MathWorks, Inc.
 */
-int led1 = 13;
+int led1 = 13; //LED
 int ThermistorPin = 0; //thermistor pin in A0
 int Vo; //voltage output
 float R1 = 10000; //resistor value
@@ -43,7 +44,7 @@ const char* myWriteAPIKey = SECRET_WRITE_APIKEY;
 
 void setup() {
   Serial.begin(9600);
-  pinMode(led1, OUTPUT);
+  pinMode(led1, OUTPUT); //setup LED
 
   // check for the WiFi module:
   if (WiFi.status() == WL_NO_MODULE) {
@@ -89,9 +90,9 @@ void loop() {
   
   // Write to ThingSpeak. There are up to 8 fields in a channel, allowing you to store up to 8 different
   // pieces of information in a channel.  Here, we write to field 1.
-  if(T >= 78) {
-    digitalWrite(13, HIGH);
-    int x = ThingSpeak.writeField(myChannelNumber, 1, T, myWriteAPIKey);
+  if(T >= 78) { //only send data for temp above a number
+    digitalWrite(13, HIGH); //turn on LED
+    int x = ThingSpeak.writeField(myChannelNumber, 1, T, myWriteAPIKey); //send data to ThingSpeak
   if(x == 200){
     Serial.println("Channel update successful.");
   }
