@@ -33,7 +33,7 @@ float logR2, R2, T; //T = temperature reading, R2 = Thermistor Resistance
 float c1 = 1.009249522e-03, c2 = 2.378405444e-04, c3 = 2.019202697e-07;
                         
 char ssid[] = SECRET_SSID;    //  your network SSID (name) 
-char pass[] = SECRET_PASS;   // your network password, none for RIT-Legacy network
+char pass[] = SECRET_PASS;   // your network password
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
 WiFiClient  client;
 
@@ -90,7 +90,7 @@ void loop() {
   
   // Write to ThingSpeak. There are up to 8 fields in a channel, allowing you to store up to 8 different
   // pieces of information in a channel.  Here, we write to field 1.
-  if(T >= 78) { //only send data for temp above a number
+  if(T >= 72) { //only send data for temp above a number so it's clear that the user has squeezed the thermistor with their fingers
     digitalWrite(13, HIGH); //turn on LED
     int x = ThingSpeak.writeField(myChannelNumber, 1, T, myWriteAPIKey); //send data to ThingSpeak
   if(x == 200){
