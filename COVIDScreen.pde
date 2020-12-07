@@ -1,3 +1,10 @@
+Serial myPort1;  // Create object from Serial class
+String tempVal;     // Data received from the serial port
+
+Serial myPort2;  // Create object from Serial class
+String pressVal;     // Data received from the serial port
+
+
 boolean answer = true;
 boolean userAnswer;
 boolean answeredQuestion = false;
@@ -8,7 +15,16 @@ void setup() {
 }
 
 void draw() {
-  
+  if(tempVal > 70)
+  {
+    userAnswer = true;
+    results();
+  }
+  else if(pressVal > 7)
+  {
+    userAnswer = false;
+    results();
+  }
 }
 
 void clean()
@@ -52,16 +68,6 @@ void keyTyped() {
     clean();
     text("Please hit spacebar to reset...", 200, 430);
   }
-  else if(int(key) == 116)
-  {
-    userAnswer = true;
-    results();
-  }
-  else if(int(key) == 102)
-  {
-    userAnswer = false;
-    results();
-  }
   else if(int(key) == 32)
   {
     reset();
@@ -69,6 +75,6 @@ void keyTyped() {
   else
   {
     clean();
-    text("Please type T or F to answer...", 200, 430);
+    text("Please use the sensors to answer...", 200, 430);
   }
 }
